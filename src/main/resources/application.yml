@@ -3,12 +3,15 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: QTJKLas4321
+    driver-class-name: org.postgresql.Driver
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 
 project:
