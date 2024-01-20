@@ -21,8 +21,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private JWT_Services services;
-    private UserDetailsService userDetailsService;
+    private final JWT_Services services;
+    private final UserDetailsService userDetailsService;
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -30,17 +30,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         final String authHandler = request.getHeader("Authorization");
-        final String jwt;
+        final String jwtToken;
         final String userEmail;
         if (authHandler == null || !authHandler.startsWith("Bearer")) {
             filterChain.doFilter(request , response);
             return;
         }
-        jwt = authHandler.substring(7);
-        userEmail = services.getEmailFromToken(jwt);
+        jwtToken = authHandler.substring(7);
+        userEmail = services.getEmailFromToken(jwtToken);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (services.isTokenValid(jwt , userDetails)){
+            if (services.isTokenValid(jwtToken , userDetails)){
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null , userDetails.getAuthorities()
                 );
